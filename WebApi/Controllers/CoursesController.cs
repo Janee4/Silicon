@@ -9,7 +9,7 @@ public class CoursesController : ControllerBase
     [HttpGet]
     public async Task<IActionResult> GetAll()
     {
-        return Ok(); ;
+        return Ok();
     }
 
 }
