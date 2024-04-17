@@ -1,21 +1,50 @@
-﻿using Microsoft.AspNetCore.Mvc;
+﻿using Infrastructure.Contexts;
+using Infrastructure.Entities;
+using Microsoft.AspNetCore.Mvc;
+using Microsoft.EntityFrameworkCore;
 
 namespace WebApi.Controllers;
 
 [Route("api/[controller]")]
 [ApiController]
-public class SubscribeController : ControllerBase
+public class SubscribeController(ApiContext context) : ControllerBase
 {
+    private readonly ApiContext _context = context;
+
     [HttpPost]
     public async Task<IActionResult> Subscribe(string email) //hur man registrerar epost adressen: jo, via email. Dvs vi hämtar in en epost adress.
-    { 
-    return Ok();
+    {
+
+        if (ModelState.IsValid)
+        {
+            if (await _context.Subscribers.AnyAsync(x => x.Email == email))
+                return Conflict();
+
+            _context.Add(new SubscribersEntity { Email = email });
+            await _context.SaveChangesAsync();
+            return Ok();
+
+        }
+
+        return BadRequest();
     }
 
     [HttpDelete]
     public async Task<IActionResult> UnSubscribe(string email)
     {
-        return Ok();
+        if (ModelState.IsValid)
+        {
+            var subscriberEntity = await _context.Subscribers.FirstOrDefaultAsync(x => x.Email == email);
+            if (subscriberEntity == null)
+                return NotFound();
+
+            _context.Remove(subscriberEntity);
+            await _context.SaveChangesAsync();
+            return Ok();
+
+        }
+
+        return BadRequest();
     }
 
 }
