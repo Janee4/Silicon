@@ -12,15 +12,15 @@ public class SubscribeController(ApiContext context) : ControllerBase
     private readonly ApiContext _context = context;
 
     [HttpPost]
-    public async Task<IActionResult> Subscribe(string email) //hur man registrerar epost adressen: jo, via email. Dvs vi hämtar in en epost adress.
+    public async Task<IActionResult> Subscribe(SubscribersEntity entity) //hur man registrerar epost adressen: jo, via email. Dvs vi hämtar in en epost adress.
     {
 
         if (ModelState.IsValid)
         {
-            if (await _context.Subscribers.AnyAsync(x => x.Email == email))
+            if (await _context.Subscribers.AnyAsync(x => x.Email == entity.Email))
                 return Conflict();
 
-            _context.Add(new SubscribersEntity { Email = email });
+            _context.Add(entity);
             await _context.SaveChangesAsync();
             return Ok();
 

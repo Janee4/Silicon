@@ -16,9 +16,9 @@ public class CourseEntity //Detta är en entitet för EN kurs
 
     public string Price { get; set; } = null!;
 
-    public string? DiscountPrice {  get; set; }
+    public string? DiscountPrice { get; set; }
 
-    public string Hours { get; set; } = null!; 
+    public string Hours { get; set; } = null!;
 
     public string LikesInProcent { get; set; } = null!;
 
